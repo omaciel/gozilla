@@ -23,8 +23,7 @@ func main() {
 				&cli.StringFlag{Name: "id"},
 		  	},
 		  	Action: func(c *cli.Context) error {
-				bugID := c.String("id")
-			  	resp := commands.Bug(bugID)
+			  	resp := commands.Bug(c.String("id"))
 			  	fmt.Println(resp)
 				return nil
 			},
