@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -23,8 +24,12 @@ func main() {
 				&cli.StringFlag{Name: "id"},
 		  	},
 		  	Action: func(c *cli.Context) error {
-			  	resp := commands.Bug(c.String("id"))
-			  	fmt.Println(resp)
+				resp := commands.Bug(c.String("id"))
+				for _, bug := range resp.Bugs {
+					data, _ := json.Marshal(bug)
+					//log.Printf("%+v\n", bug)
+					fmt.Println(string(data))
+				}
 				return nil
 			},
 		},
