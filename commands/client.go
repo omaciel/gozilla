@@ -4,11 +4,16 @@ import (
     "io/ioutil"
     "net/http"
     "log"
-    "fmt"
+	"fmt"
+	"encoding/json"
 )
 
+type Defects struct {
+	Bugs []Defect `json:"bugs"`
+}
+
 type Defect struct {
-    ID string `json:"id"`
+    ID int `json:"id"`
     Product string `json:"product"`
     Summary string `json:"summary"`
     Severity string `json:"severity"`
@@ -20,8 +25,12 @@ func execute(req http.Request) string {
     if err != nil{
         log.Fatal(err)
     }
-    bodyText, err := ioutil.ReadAll(resp.Body)
-    s := string(bodyText)
+	bodyText, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	s := string(bodyText)
+	
     return s
 }
 
@@ -39,11 +48,20 @@ func Get(url string) http.Request {
 
 func Version() string {
     url := fmt.Sprintf("%v/version", BugzillaURL)
-    return execute(Get(url))
+	resp := execute(Get(url))
+	return resp
 }
 
-func Bug(id string) string {
-    url := fmt.Sprintf("%v/bug/%v", BugzillaURL, id)
-    return execute(Get(url))
+func Bug(id string) Defects {
+	url := fmt.Sprintf("%v/bug/%v", BugzillaURL, id)
+	resp := execute(Get(url))
+
+	var defects Defects
+	err := json.Unmarshal([]byte(resp), &defects)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return defects
+
 }
 
