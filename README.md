@@ -1,4 +1,4 @@
-# gozilla
+# GoZilla
 An opinionated command line for Bugzilla written in Go.
 
 ## Build it
