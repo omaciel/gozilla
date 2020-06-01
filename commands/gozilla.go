@@ -1,6 +1,5 @@
 package commands
 
-
 // The Response value from Execute.
 type Response struct {
 	// The build Result will only be set in the hugo build command.

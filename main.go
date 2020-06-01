@@ -19,11 +19,11 @@ func main() {
 	app.Commands = []*cli.Command{
 		{
 			Name:  "bug",
-		  	Usage: "Fetch a Bugzilla issue by its ID.",
-		  	Flags: []cli.Flag{
+			Usage: "Fetch a Bugzilla issue by its ID.",
+			Flags: []cli.Flag{
 				&cli.StringFlag{Name: "id"},
-		  	},
-		  	Action: func(c *cli.Context) error {
+			},
+			Action: func(c *cli.Context) error {
 				resp := commands.Bug(c.String("id"))
 				for _, bug := range resp.Bugs {
 					data, _ := json.Marshal(bug)

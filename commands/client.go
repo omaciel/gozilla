@@ -1,11 +1,11 @@
 package commands
 
 import (
-    "io/ioutil"
-    "net/http"
-    "log"
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
 )
 
 type Defects struct {
@@ -13,41 +13,42 @@ type Defects struct {
 }
 
 type Defect struct {
-    ID int `json:"id"`
-    Product string `json:"product"`
-    Summary string `json:"summary"`
-    Severity string `json:"severity"`
+	ID       int    `json:"id"`
+	Product  string `json:"product"`
+	Summary  string `json:"summary"`
+	Severity string `json:"severity"`
 }
+
 var client = &http.Client{}
-	
+
 func execute(req http.Request) string {
-    resp, err := client.Do(&req)
-    if err != nil{
-        log.Fatal(err)
-    }
+	resp, err := client.Do(&req)
+	if err != nil {
+		log.Fatal(err)
+	}
 	bodyText, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	s := string(bodyText)
-	
-    return s
+
+	return s
 }
 
 func Get(url string) http.Request {
-    req, _ := http.NewRequest(
+	req, _ := http.NewRequest(
 		"GET",
 		url,
 		nil)
 	//req.SetBasicAuth(username, passwd)
 	req.Header.Set("Accept", "application/json")
-    req.Header.Set("Content-Type", "application/json")
-    log.Print(req.URL.String())
-    return *req
+	req.Header.Set("Content-Type", "application/json")
+	log.Print(req.URL.String())
+	return *req
 }
 
 func Version() string {
-    url := fmt.Sprintf("%v/version", BugzillaURL)
+	url := fmt.Sprintf("%v/version", BugzillaURL)
 	resp := execute(Get(url))
 	return resp
 }
@@ -64,4 +65,3 @@ func Bug(id string) Defects {
 	return defects
 
 }
-
