@@ -21,14 +21,18 @@ func main() {
 			Name:  "bug",
 			Usage: "Fetch a Bugzilla issue by its ID.",
 			Flags: []cli.Flag{
-				&cli.StringFlag{Name: "id"},
+				&cli.StringSliceFlag{
+					Name: "id",
+					Required: true,
+				},
 			},
 			Action: func(c *cli.Context) error {
-				resp := commands.Bug(c.String("id"))
-				for _, bug := range resp.Bugs {
-					data, _ := json.Marshal(bug)
-					//log.Printf("%+v\n", bug)
-					fmt.Println(string(data))
+				for _, id := range c.StringSlice("id") {
+					resp := commands.Bug(id)
+					for _, bug := range resp.Bugs {
+						data, _ := json.Marshal(bug)
+						fmt.Println(string(data))
+					}
 				}
 				return nil
 			},
