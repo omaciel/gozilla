@@ -1,23 +1,10 @@
 package commands
 
 import (
-	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
-
-type Defects struct {
-	Bugs []Defect `json:"bugs"`
-}
-
-type Defect struct {
-	ID       int    `json:"id"`
-	Product  string `json:"product"`
-	Summary  string `json:"summary"`
-	Severity string `json:"severity"`
-}
 
 var client = &http.Client{}
 
@@ -45,23 +32,4 @@ func Get(url string) http.Request {
 	req.Header.Set("Content-Type", "application/json")
 	log.Print(req.URL.String())
 	return *req
-}
-
-func Version() string {
-	url := fmt.Sprintf("%v/version", BugzillaURL)
-	resp := execute(Get(url))
-	return resp
-}
-
-func Bug(id string) Defects {
-	url := fmt.Sprintf("%v/bug/%v", BugzillaURL, id)
-	resp := execute(Get(url))
-
-	var defects Defects
-	err := json.Unmarshal([]byte(resp), &defects)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	return defects
-
 }

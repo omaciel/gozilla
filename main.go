@@ -22,18 +22,37 @@ func main() {
 			Usage: "Fetch a Bugzilla issue by its ID.",
 			Flags: []cli.Flag{
 				&cli.StringSliceFlag{
-					Name: "id",
+					Name:     "id",
 					Required: true,
 				},
 			},
 			Action: func(c *cli.Context) error {
 				for _, id := range c.StringSlice("id") {
-					resp := commands.Bug(id)
+					resp := commands.GetBug(id)
 					for _, bug := range resp.Bugs {
-						data, _ := json.Marshal(bug)
+						data, _ := json.MarshalIndent(bug, "", "\t")
 						fmt.Println(string(data))
 					}
 				}
+				return nil
+			},
+		},
+		{
+			Name:  "history",
+			Usage: "Fetch an issue's history.",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:     "id",
+					Required: true,
+				},
+			},
+			Action: func(c *cli.Context) error {
+				resp := commands.GetBugHistory(c.String("id"))
+				for _, bug := range resp.Bugs {
+					data, _ := json.MarshalIndent(bug, "", "\t")
+					fmt.Println(string(data))
+				}
+
 				return nil
 			},
 		},
