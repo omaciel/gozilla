@@ -1,3 +1,4 @@
+![GoZilla CI](https://github.com/omaciel/gozilla/workflows/GoZilla%20CI/badge.svg)
 # GoZilla
 An opinionated command line for Bugzilla written in Go.
 
@@ -45,7 +46,7 @@ USAGE:
    gozilla bug [command options] [arguments...]
 
 OPTIONS:
-   --id value  
+   --id value
    --help, -h  show help (default: false)
 ```
 
