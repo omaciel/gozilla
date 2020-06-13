@@ -5,9 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"github.com/omaciel/gozilla/commands"
 )
+
+// ROOT URL
+const BugzillaURL = "https://bugzilla.redhat.com/rest"
 
 var client = &http.Client{}
 
@@ -42,7 +43,12 @@ func (r Request) Get() string {
 		"GET",
 		r.URL,
 		nil)
-	//req.SetBasicAuth(username, passwd)
+	if &r.Auth != nil {
+		req.SetBasicAuth(
+			r.Auth.Username,
+			r.Auth.Password,
+		)
+	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 	log.Print(req.URL.String())
@@ -54,8 +60,10 @@ func BugzillaRequest(
 	data map[string]string,
 	auth Authentication) Request {
 	request := Request{}
-	request.URL = fmt.Sprintf("%v/%v", commands.BugzillaURL, endpoint)
-	request.Auth = auth
+	request.URL = fmt.Sprintf("%v/%v", BugzillaURL, endpoint)
+	if &auth != nil {
+		request.Auth = auth
+	}
 	request.Data = data
 	return request
 }

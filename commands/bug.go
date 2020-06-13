@@ -4,17 +4,26 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+
+	"github.com/omaciel/gozilla/bugzilla"
 )
 
 func Version() string {
-	url := fmt.Sprintf("%v/version", BugzillaURL)
-	resp := execute(Get(url))
+	resp := bugzilla.BugzillaRequest(
+		"version",
+		nil,
+		bugzilla.Authentication{},
+	).Get()
 	return resp
 }
 
 func GetBug(id string) Defects {
-	url := fmt.Sprintf(BugByID, BugzillaURL, id)
-	resp := execute(Get(url))
+	url := fmt.Sprintf("bug/%v", id)
+	resp := bugzilla.BugzillaRequest(
+		url,
+		nil,
+		bugzilla.Authentication{},
+	).Get()
 
 	var defects Defects
 	err := json.Unmarshal([]byte(resp), &defects)
@@ -26,8 +35,12 @@ func GetBug(id string) Defects {
 }
 
 func GetBugHistory(id string) BugHistoryList {
-	url := fmt.Sprintf(BugHistoryByID, BugzillaURL, id)
-	resp := execute(Get(url))
+	url := fmt.Sprintf("bug/%v/history", id)
+	resp := bugzilla.BugzillaRequest(
+		url,
+		nil,
+		bugzilla.Authentication{},
+	).Get()
 
 	var history BugHistoryList
 	err := json.Unmarshal([]byte(resp), &history)
