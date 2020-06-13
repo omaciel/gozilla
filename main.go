@@ -70,7 +70,10 @@ func main() {
 			Name:  "client",
 			Usage: "This is only a test",
 			Action: func(c *cli.Context) error {
-				auth := bugzilla.Authentication{"admin", "password"}
+				auth := bugzilla.Authentication{
+					Username: "admin",
+					Password: "password",
+				}
 				req := bugzilla.BugzillaRequest("bug", nil, auth)
 				fmt.Println(req)
 				return nil

@@ -9,7 +9,6 @@ import (
 	"github.com/omaciel/gozilla/commands"
 )
 
-
 var client = &http.Client{}
 
 func execute(req http.Request) string {
@@ -27,7 +26,7 @@ func execute(req http.Request) string {
 }
 
 type Authentication struct {
-	UserName string
+	Username string
 	Password string
 }
 
