@@ -18,7 +18,7 @@ jobs:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
-        go: ['1.13']
+        go: ['1.14']
     name: GoZilla
     steps:
       - uses: actions/checkout@v2

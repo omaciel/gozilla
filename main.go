@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/omaciel/gozilla/bugzilla"
 	"github.com/omaciel/gozilla/commands"
 
 	"github.com/urfave/cli/v2"
@@ -62,6 +63,19 @@ func main() {
 			Action: func(c *cli.Context) error {
 				resp := commands.Version()
 				fmt.Println(resp)
+				return nil
+			},
+		},
+		{
+			Name:  "client",
+			Usage: "This is only a test",
+			Action: func(c *cli.Context) error {
+				auth := bugzilla.Authentication{
+					Username: "admin",
+					Password: "password",
+				}
+				req := bugzilla.BugzillaRequest("bug", nil, auth)
+				fmt.Println(req)
 				return nil
 			},
 		},
