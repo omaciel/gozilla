@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -27,7 +28,8 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				for _, id := range c.StringSlice("id") {
+				ids := strings.Split(c.StringSlice("id")[0], ",")
+				for _, id := range ids{
 					resp := commands.GetBug(id)
 					for _, bug := range resp.Bugs {
 						data, _ := json.MarshalIndent(bug, "", "\t")
