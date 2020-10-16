@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"regexp"
 
 	"github.com/omaciel/gozilla/bugzilla"
 )
 
+// Version : Fetch the version information of the Bugzilla server.
 func Version() string {
 	resp := bugzilla.BugzillaRequest(
 		"version",
@@ -17,8 +19,16 @@ func Version() string {
 	return resp
 }
 
-func GetBug(id string) Defects {
-	url := fmt.Sprintf("bug/%v", id)
+// GetBug : Fetch a bug/s matching an id or a set of keywords. Also supports adding a limit of results.
+func GetBug(filter, limit string) Defects {
+	var url string
+
+	if matched, _ := regexp.MatchString("^[0-9]+$", filter); matched {
+		url = fmt.Sprintf("bug/%v", filter)
+	} else {
+		url = fmt.Sprintf("bug?keywords=%v&limit=%v", filter, limit)
+	}
+
 	resp := bugzilla.BugzillaRequest(
 		url,
 		nil,
@@ -34,6 +44,7 @@ func GetBug(id string) Defects {
 
 }
 
+// GetBugHistory : Fetch the history of a bug.
 func GetBugHistory(id string) BugHistoryList {
 	url := fmt.Sprintf("bug/%v/history", id)
 	resp := bugzilla.BugzillaRequest(
