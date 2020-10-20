@@ -20,13 +20,13 @@ func Version() string {
 }
 
 // GetBug : Fetch a bug/s matching an id or a set of keywords. Also supports adding a limit of results.
-func GetBug(filter, limit string) Defects {
+func GetBug(filter, resultCount string) Defects {
 	var url string
-
+	// if the filter matches digit-only pattern consider it a bug ID else a keyword
 	if matched, _ := regexp.MatchString("^[0-9]+$", filter); matched {
 		url = fmt.Sprintf("bug/%v", filter)
 	} else {
-		url = fmt.Sprintf("bug?keywords=%v&limit=%v", filter, limit)
+		url = fmt.Sprintf("bug?keywords=%v&limit=%v", filter, resultCount)
 	}
 
 	resp := bugzilla.BugzillaRequest(

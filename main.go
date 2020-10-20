@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
+	"regexp"
 
 	"github.com/omaciel/gozilla/commands"
 
@@ -35,20 +35,21 @@ func main() {
 			Action: func(c *cli.Context) error {
 				var (
 					filters  []string
-					limit string = "5"
+					resultCount string = "5"
 				)
 
 				if c.IsSet("id") {
-					filters = strings.Split(c.StringSlice("id")[0], ",")
+					re := regexp.MustCompile(`[0-9]+\b,{0,1}?`)
+					filters = re.FindAllString(c.String("id"), -1)
 				} else if c.IsSet("keywords") {
 					filters = c.StringSlice("keywords")
 				}
 				if c.IsSet("limit") {
-					limit = c.StringSlice("limit")[0]
+					resultCount = c.StringSlice("limit")[0]
 				}
 
 				for _, filter := range filters {
-					resp := commands.GetBug(filter, limit)
+					resp := commands.GetBug(filter, resultCount)
 					for _, bug := range resp.Bugs {
 						data, _ := json.MarshalIndent(bug, "", "\t")
 						fmt.Println(string(data))
