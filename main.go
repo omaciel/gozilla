@@ -1,11 +1,11 @@
 package main
 
 import (
-	"strings"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 
 	"github.com/omaciel/gozilla/commands"
 
@@ -23,14 +23,33 @@ func main() {
 			Usage: "Fetch a Bugzilla issue by its ID.",
 			Flags: []cli.Flag{
 				&cli.StringSliceFlag{
-					Name:     "id",
-					Required: true,
+					Name: "id",
+				},
+				&cli.StringSliceFlag{
+					Name: "keywords",
+				},
+				&cli.StringSliceFlag{
+					Name: "limit",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				ids := strings.Split(c.StringSlice("id")[0], ",")
-				for _, id := range ids{
-					resp := commands.GetBug(id)
+				var (
+					filters  []string
+					resultCount string = "5"
+				)
+
+				if c.IsSet("id") {
+					re := regexp.MustCompile(`[0-9]+\b,{0,1}?`)
+					filters = re.FindAllString(c.String("id"), -1)
+				} else if c.IsSet("keywords") {
+					filters = c.StringSlice("keywords")
+				}
+				if c.IsSet("limit") {
+					resultCount = c.StringSlice("limit")[0]
+				}
+
+				for _, filter := range filters {
+					resp := commands.GetBug(filter, resultCount)
 					for _, bug := range resp.Bugs {
 						data, _ := json.MarshalIndent(bug, "", "\t")
 						fmt.Println(string(data))
