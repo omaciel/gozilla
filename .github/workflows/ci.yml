@@ -3,8 +3,7 @@ on:
     branches:
       - '*'
   pull_request:
-  schedule:
-    - cron:  '13 5 * * *'
+
 
 name: GoZilla CI
 
